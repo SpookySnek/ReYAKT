@@ -1,3 +1,8 @@
+## Fork info:
+This fork of YAKT is for testing different tweaks on my personal phone (Poco F4 running Fusion-X kernel), I cannot guarantee its functionality regarding other phones and/or kernels.
+
+If you decide to try it, make sure that you have a bootloop-protection module installed. 
+
 ![IMG_20220530_225120](https://user-images.githubusercontent.com/67799176/171062389-24c1c096-f991-449f-b962-45f145b95355.jpg)
 # YAKT
 **Yet Another Kernel Tweaker**. A Magisk module to Tweak your Kernel parameters. This module applies at boot and it's not an AI module.
