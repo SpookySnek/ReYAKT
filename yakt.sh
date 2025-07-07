@@ -64,8 +64,8 @@ ERROR_LOG="${MODDIR}/error.log"
 # :> "$DEBUG_LOG"
 
 # Variables
-UCLAMP_PATH="/dev/stune/top-app/uclamp.max"
-CPUSET_PATH="/dev/cpuset"
+UCLAMP_PATH="/dev/cpuctl/top-app/cpu.uclamp.max"
+CPUCTL_PATH="/dev/cpuctl"
 MODULE_PATH="/sys/module"
 KERNEL_PATH="/proc/sys/kernel"
 IPV4_PATH="/proc/sys/net/ipv4"
@@ -77,9 +77,10 @@ ANDROID_VERSION=$(getprop ro.build.version.release)
 TOTAL_RAM=$(free -m | awk '/Mem/{print $2}')
 
 # Log starting information
-log_info "Starting YAKT v17"
-log_info "Build Date: 06/06/2024"
+log_info "Starting ReYAKT v0.1.0"
+log_info "Build Date: 2025-07-07"
 log_info "Author: @NotZeetaa (Github)"
+log_info "Fork Author: @SpookySnek (Github)"
 log_info "Device: $(getprop ro.product.system.model)"
 log_info "Brand: $(getprop ro.product.system.brand)"
 log_info "Kernel: $(uname -r)"
@@ -182,28 +183,24 @@ log_info "Done."
 # Cgroup tweak for UCLAMP scheduler
 if [ -e "$UCLAMP_PATH" ]; then
     # Uclamp tweaks
-    # Credits to @darkhz
+    # Credits to @darkhz and @WeirdMidas
     log_info "UCLAMP scheduler detected, applying tweaks..."
-    top_app="${CPUSET_PATH}/top-app"
-    write_value "$top_app/uclamp.max" max
-    write_value "$top_app/uclamp.min" 10
-    write_value "$top_app/uclamp.boosted" 1
-    write_value "$top_app/uclamp.latency_sensitive" 1
-    foreground="${CPUSET_PATH}/foreground"
-    write_value "$foreground/uclamp.max" 50
-    write_value "$foreground/uclamp.min" 0
-    write_value "$foreground/uclamp.boosted" 0
-    write_value "$foreground/uclamp.latency_sensitive" 0
-    background="${CPUSET_PATH}/background"
-    write_value "$background/uclamp.max" max
-    write_value "$background/uclamp.min" 20
-    write_value "$background/uclamp.boosted" 0
-    write_value "$background/uclamp.latency_sensitive" 0
-    sys_bg="${CPUSET_PATH}/system-background"
-    write_value "$sys_bg/uclamp.min" 0
-    write_value "$sys_bg/uclamp.max" 40
-    write_value "$sys_bg/uclamp.boosted" 0
-    write_value "$sys_bg/uclamp.latency_sensitive" 0
+    top_app="${CPUCTL_PATH}/top-app"
+    write_value "$top_app/cpu.uclamp.max" max
+    write_value "$top_app/cpu.uclamp.min" 20
+    write_value "$top_app/cpu.uclamp.latency_sensitive" 1
+    foreground="${CPUCTL_PATH}/foreground"
+    write_value "$foreground/cpu.uclamp.max" 80
+    write_value "$foreground/cpu.uclamp.min" 10
+    write_value "$foreground/cpu.uclamp.latency_sensitive" 0
+    background="${CPUCTL_PATH}/background"
+    write_value "$background/cpu.uclamp.max" max
+    write_value "$background/cpu.uclamp.min" 40
+    write_value "$background/cpu.uclamp.latency_sensitive" 0
+    sys_bg="${CPUCTL_PATH}/system-background"
+    write_value "$sys_bg/cpu.uclamp.min" 0
+    write_value "$sys_bg/cpu.uclamp.max" 50
+    write_value "$sys_bg/cpu.uclamp.latency_sensitive" 0
     sysctl -w kernel.sched_util_clamp_min_rt_default=0
     sysctl -w kernel.sched_util_clamp_min=128
     log_info "Done."
